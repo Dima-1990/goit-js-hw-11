@@ -15,6 +15,18 @@ const refs = {
   sbmtBtn: document.querySelector('[type="submit"]'),
   loadMoreBtn: document.querySelector('.load-more'),
   gallery: document.querySelector('.gallery'),
+  lightbox: null,
+
+  refresh() {
+    if (this.lightbox) {
+      this.lightbox.destroy(); // Знищити попередній лайтбокс
+    }
+    this.lightbox = new SimpleLightbox('.gallery a', {
+      captions: true,
+      captionsData: 'alt',
+      captionDelay: 250,
+    });
+  },
 };
 
 let currentPage = 1;
@@ -111,6 +123,7 @@ function makeMarkup(images) {
     .join('');
 
   refs.gallery.insertAdjacentHTML('beforeend', markup);
+  refs.refresh();
   const lightbox = new SimpleLightbox('.gallery a', {
     captions: true,
     captionsData: 'alt',
@@ -133,6 +146,7 @@ function hideLoadMoreButton() {
 async function loadMoreImages() {
   currentPage += 1;
   await fetchDataBySearch();
+  refs.refresh();
 }
 
 refs.form.addEventListener('submit', handleFormSubmit);
